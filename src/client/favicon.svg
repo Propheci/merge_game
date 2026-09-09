@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cocktail">
+  <circle cx="32" cy="32" r="32" fill="#2a9fd0"/>
+  <path d="M14 18h36L36 36v12h8v4H20v-4h8V36z" fill="#fff6e5"/>
+  <path d="M19 22h26l-9 11h-8z" fill="#ff8a4c"/>
+  <circle cx="46" cy="15" r="6" fill="#e94f5a"/>
+</svg>

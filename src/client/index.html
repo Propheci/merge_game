@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Beach Bar Merge</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hud">
+        <div class="hud-box">
+          <span class="hud-label">Score</span>
+          <span id="score" class="hud-value">0</span>
+        </div>
+        <div class="hud-box">
+          <span class="hud-label">Best</span>
+          <span id="best" class="hud-value">0</span>
+        </div>
+        <div class="hud-box hud-next">
+          <span class="hud-label">Next</span>
+          <canvas id="next" width="52" height="52" aria-label="Next drink"></canvas>
+        </div>
+      </header>
+
+      <div class="board">
+        <canvas id="board" width="400" height="640" aria-label="Merge board"></canvas>
+
+        <div id="overlay" class="overlay">
+          <div class="panel">
+            <h1 id="panel-title">Beach Bar Merge</h1>
+            <p id="panel-text">
+              The table is slippery and flat. Push a drink in from your edge. Two equal drinks
+              touch and become one larger drink. Keep the pile beyond the dashed line.
+            </p>
+            <p id="panel-score" class="panel-score hidden"></p>
+
+            <div id="submit-row" class="submit-row hidden">
+              <label class="sr-only" for="player-name">Your name</label>
+              <input
+                id="player-name"
+                type="text"
+                maxlength="16"
+                placeholder="Your name"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+              />
+              <button id="submit" type="button">Send score</button>
+            </div>
+            <p id="submit-note" class="note"></p>
+
+            <button id="play" type="button" class="primary">Play</button>
+
+            <section class="scores">
+              <h2>Top scores</h2>
+              <ol id="leaderboard"></ol>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <footer id="ladder" class="ladder" aria-hidden="true"></footer>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

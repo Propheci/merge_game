@@ -1,0 +1,22 @@
+{
+  "name": "beach-bar-merge",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/matter-js": "^0.20.2"
+  },
+  "peerDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "matter-js": "^0.20.0"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development bun --hot src/server/index.ts",
+    "start": "NODE_ENV=production bun src/server/index.ts",
+    "build": "bun build src/client/main.ts --outdir dist --target browser --minify",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit"
+  }
+}
