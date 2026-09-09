@@ -19,6 +19,8 @@ import type {
 } from "../shared/protocol.ts";
 
 const PORT = Number(process.env.PORT ?? 3000);
+/** Address to bind. Leave unset to listen on every interface. */
+const HOSTNAME = process.env.HOST || undefined;
 const PRODUCTION = process.env.NODE_ENV === "production";
 /** Set MERGE_GAME_HSTS=1 only when the site runs behind HTTPS. */
 const USE_HSTS = process.env.MERGE_GAME_HSTS === "1";
@@ -135,6 +137,7 @@ function getLeaderboard(ip: string): Response {
 
 const server = serve({
   port: PORT,
+  hostname: HOSTNAME,
   // Refuse a body that is larger than any request this server accepts.
   maxRequestBodySize: 16 * 1024,
   idleTimeout: 30,
@@ -167,4 +170,6 @@ const server = serve({
   },
 });
 
-console.log(`merge game on http://localhost:${server.port}  (production=${PRODUCTION})`);
+console.log(
+  `merge game on http://${server.hostname}:${server.port}  (production=${PRODUCTION})`,
+);

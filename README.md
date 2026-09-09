@@ -29,9 +29,76 @@ bun run typecheck
 | Variable                  | Default             | Function                                        |
 | ------------------------- | ------------------- | ----------------------------------------------- |
 | `PORT`                    | `3000`              | Port of the HTTP server.                        |
+| `HOST`                    | every interface     | Address to bind.                                |
 | `MERGE_GAME_DB`           | `data/scores.sqlite`| Path of the SQLite file.                        |
 | `MERGE_GAME_HSTS`         | off                 | Set to `1` only when the site runs behind HTTPS.|
 | `MERGE_GAME_TRUST_PROXY`  | off                 | Set to `1` only behind a proxy that you control.|
+| `MERGE_GAME_PREBUILT`     | off                 | Set to `1` to skip the start-up client build.   |
+| `MERGE_GAME_DIST`         | `dist/`             | Directory holding the built `main.js`.          |
+
+## Deploying with Nix
+
+The flake ships the game as a package and as a NixOS module.
+
+```nix
+# flake.nix of your system configuration
+{
+  inputs.beach-bar-merge.url = "github:Propheci/merge_game";
+
+  outputs = { nixpkgs, beach-bar-merge, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        beach-bar-merge.nixosModules.default
+        {
+          services.beach-bar-merge = {
+            enable = true;
+            nginx = {
+              enable = true;
+              domain = "merge.example.com";
+            };
+          };
+        }
+      ];
+    };
+  };
+}
+```
+
+That runs the server on `127.0.0.1:3000` under a systemd `DynamicUser`, keeps
+the leaderboard in `/var/lib/beach-bar-merge/scores.sqlite`, and puts nginx in
+front with a Let's Encrypt certificate. Turning on `nginx` also turns on
+`hsts` and `trustProxy`, because the requests then really do arrive over HTTPS
+through a proxy that sets `X-Forwarded-For`.
+
+Without a proxy, serve the port directly instead:
+
+```nix
+services.beach-bar-merge = {
+  enable = true;
+  address = "0.0.0.0";
+  port = 8080;
+  openFirewall = true;
+};
+```
+
+Options: `package`, `port`, `address`, `dataDir`, `user`, `group`,
+`openFirewall`, `hsts`, `trustProxy`, `environmentFile`, `environment`, and
+`nginx.{enable,domain,enableACME}`. Run `nixos-option
+services.beach-bar-merge` for the descriptions.
+
+Other flake outputs:
+
+```sh
+nix run .                      # build and start the game
+nix develop                    # a shell with bun and sqlite
+nix flake check                # builds the package and runs the VM test
+nix build .#beach-bar-merge    # just the package
+```
+
+After changing `bun.lock`, refresh the pinned dependency hash: run
+`nix build .#beach-bar-merge.deps`, then put the hash it reports into
+`depsHash` in `nix/package.nix`.
 
 ## Layout
 

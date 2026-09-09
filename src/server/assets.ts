@@ -15,7 +15,18 @@ export interface Asset {
 }
 
 const CLIENT_DIR = new URL("../client/", import.meta.url).pathname;
-const OUT_DIR = new URL("../../dist/", import.meta.url).pathname;
+
+/** Where the bundled browser code lives. Override for a read-only install. */
+const OUT_DIR = withTrailingSlash(process.env.MERGE_GAME_DIST) ??
+  new URL("../../dist/", import.meta.url).pathname;
+
+/** Set MERGE_GAME_PREBUILT=1 when the bundle is built ahead of time. */
+const PREBUILT = process.env.MERGE_GAME_PREBUILT === "1";
+
+function withTrailingSlash(dir: string | undefined): string | undefined {
+  if (!dir) return undefined;
+  return dir.endsWith("/") ? dir : `${dir}/`;
+}
 
 /** Public path -> file on disk. This table is the complete allow list. */
 const SOURCES: ReadonlyArray<readonly [string, string, string, string]> = [
@@ -27,6 +38,7 @@ const SOURCES: ReadonlyArray<readonly [string, string, string, string]> = [
 
 /** Compiles the browser code into dist/main.js. */
 export async function buildClient(minify: boolean): Promise<void> {
+  if (PREBUILT) return;
   const result = await build({
     entrypoints: [`${CLIENT_DIR}main.ts`],
     outdir: OUT_DIR,
